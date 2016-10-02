@@ -2,14 +2,13 @@
 using System.Collections;
 
 public class PlayerScript : MonoBehaviour {
-
-    /// <summary>
-    /// 1 - The speed of the ship
-    /// </summary>
+    
+    //The speed of the ship
     public Vector2 speed = new Vector2(50, 50);
 
-    // 2 - Store the movement and the component
+    //Store the movement, the rotation and the component
     private Vector2 movement;
+    private float rotation;
     private Rigidbody2D rigidbodyComponent;
 
 
@@ -20,23 +19,37 @@ public class PlayerScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        // 3 - Retrieve axis information
-        //float inputX = Input.GetAxis("Horizontal");
-        float inputX = NetworkInputManager.X;
-        float inputY = Input.GetAxis("Vertical");
+        float inputX = NetworkInputManager.Movement.X;
+        float inputY = NetworkInputManager.Movement.Y;
 
-        // 4 - Movement per direction
+        rotation = NetworkInputManager.Rotation.Z;
+
+        //Movement per direction
         movement = new Vector2(
           speed.x * inputX,
           speed.y * inputY);
+
+        if(NetworkInputManager.FireCommandRegistered)
+        {
+            WeaponScript weapon = GetComponent<WeaponScript>();
+            if(weapon != null)
+            {
+                weapon.Attack(false);
+            }
+            NetworkInputManager.FireCommandRegistered = false;
+        }
     }
 
     void FixedUpdate()
     {
-        // 5 - Get the component and store the reference
-        if (rigidbodyComponent == null) rigidbodyComponent = GetComponent<Rigidbody2D>();
+        //Get the component and store the reference
+        if (rigidbodyComponent == null)
+        {
+            rigidbodyComponent = GetComponent<Rigidbody2D>();
+        }
 
-        // 6 - Move the game object
+        //Move the game object
         rigidbodyComponent.velocity = movement;
+        rigidbodyComponent.rotation = rotation;
     }
 }

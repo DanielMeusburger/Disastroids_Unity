@@ -26,7 +26,7 @@ for this sample, a port was chosen (20000).
 Param( 
 [int]$Port = 2048,
 [string]$IP = "127.0.0.1",
-[string]$Message = "Lol `n"
+[string]$Message = "{`"type`":`"Fire`",`"x`":0.1,`"y`":0.1,`"z`":0.5}"
 )
 
 

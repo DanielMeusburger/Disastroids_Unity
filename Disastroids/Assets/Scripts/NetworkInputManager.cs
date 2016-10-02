@@ -10,10 +10,15 @@ public class NetworkInputManager : MonoBehaviour {
     Thread ReadThread = null;
     bool ReaderRunning = false;
 
-    public int ListeningPort, SendingPort;
+    public int ListeningPort;
+    public int SendingPort;
 
     //DEBUG
-    public static float X = 0f;
+    //Controller accelerometer
+    public static ControllerMovement Movement = new ControllerMovement();
+    public static ControllerMovement Rotation = new ControllerMovement();
+
+    public static bool FireCommandRegistered = false;
 
     void Start () {
         
@@ -59,10 +64,13 @@ public class NetworkInputManager : MonoBehaviour {
                 //Debug.Log("received packed of len=" + length);
                 if (length > 0)
                 {
+                    string receivedMessage = System.Text.Encoding.ASCII.GetString(buffer);
                     //DEBUG : If a UDP datagram is received, let's move the ship to the right indefinetly
                     Debug.Log("New Message");
-                    Debug.Log(buffer);
-                    X = 0.01f;
+                    Debug.Log(receivedMessage);
+                    //X = 0.01f;
+
+                    HandleMessage(receivedMessage);
                 }
                 else
                     Thread.Sleep(20);
@@ -73,9 +81,44 @@ public class NetworkInputManager : MonoBehaviour {
             Debug.Log("ThreadAbortException"+e);
         }
     }
+
+    private void HandleMessage(string udpMessage)
+    {
+        UDPMessage message = JsonUtility.FromJson<UDPMessage>(udpMessage);
+        switch(message.type)
+        {
+            case "Move":
+                Movement.X = message.x;
+                Movement.Y = message.y;
+                Movement.Z = message.z;
+                break;
+            case "Fire":
+                FireCommandRegistered = true;
+                break;
+            case "Rotate":
+                Rotation.X = message.x;
+                Rotation.Y = message.y;
+                Rotation.Z = message.z;
+                break;
+            default:
+                break;
+        }
+    }
 	
 	// Update is called once per frame
 	void Update () {
 	
 	}
+}
+
+[Serializable]
+public class UDPMessage
+{
+    public string type = "Yo";
+    public float x, y, z = 0.5f ;
+}
+
+public class ControllerMovement
+{
+    public float X, Y, Z = 0f;
 }

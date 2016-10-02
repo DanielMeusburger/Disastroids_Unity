@@ -112,6 +112,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: {x: 50, y: 50}
+--- !u!114 &8805110
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 8805107}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 65ffdf4ba2d49dd49a26d02521b5fa47, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  shotPrefab: {fileID: 4000012238004652, guid: 9ae357690c4cbc546bf2fa1bd6f6b5cf, type: 2}
+  shootingRate: 0.25
 --- !u!50 &8805111
 Rigidbody2D:
   serializedVersion: 2
@@ -140,7 +153,7 @@ GameObject:
   - 114: {fileID: 40803438}
   - 114: {fileID: 40803437}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: NetworkInputManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
