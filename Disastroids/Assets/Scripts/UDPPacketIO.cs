@@ -5,10 +5,11 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using UnityEngine;
+using System.Text;
 
 
-  // UdpPacket provides packetIO over UDP
-  public class UDPPacketIO : MonoBehaviour
+// UdpPacket provides packetIO over UDP
+public class UDPPacketIO : MonoBehaviour
   {
     private UdpClient Sender;
     private UdpClient Receiver;
@@ -110,7 +111,7 @@ using UnityEngine;
 
     // buffer - The buffer to be read into.
     // returns - The number of bytes read, or 0 on failure
-    public int ReceivePacket(byte[] buffer)
+    public int ReceivePacket(byte[] buffer, StringBuilder adress)
     {
         if (!IsOpen())
             Open();
@@ -119,6 +120,7 @@ using UnityEngine;
 
       IPEndPoint iep = new IPEndPoint(IPAddress.Any, localPort);
       byte[] incoming = Receiver.Receive( ref iep );
+        adress.Append(iep.Address);
       int count = Math.Min(buffer.Length, incoming.Length);
       System.Array.Copy(incoming, buffer, count);
       return count;

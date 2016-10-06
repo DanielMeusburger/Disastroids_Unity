@@ -2,6 +2,9 @@
 using System.Collections;
 using System.Threading;
 using System;
+using System.Text;
+
+public delegate void NewControllerDelegate(string controllerIP);
 
 public class NetworkInputManager : MonoBehaviour {
 
@@ -10,18 +13,25 @@ public class NetworkInputManager : MonoBehaviour {
     Thread ReadThread = null;
     bool ReaderRunning = false;
 
+    static NewControllerDelegate ncDelegate;
+
     public int ListeningPort;
     public int SendingPort;
 
-    //DEBUG
-    //Controller accelerometer
-    public static ControllerMovement Movement = new ControllerMovement();
-    public static ControllerMovement Rotation = new ControllerMovement();
+    public static System.Collections.Generic.Dictionary<string, Controller> ConnectedControllers {
+        get;
+        protected set;
+    }
 
-    public static bool FireCommandRegistered = false;
+    public static void setNewControllerDelegate(NewControllerDelegate ncDelegate)
+    {
+        NetworkInputManager.ncDelegate = ncDelegate;
+    }
 
     void Start () {
-        
+
+        ConnectedControllers = new System.Collections.Generic.Dictionary<string,Controller>();
+
         packetIO = GetComponent<UDPPacketIO>();
         packetIO.init("127.0.0.1", ListeningPort, SendingPort);
 
@@ -60,7 +70,8 @@ public class NetworkInputManager : MonoBehaviour {
             while (ReaderRunning)
             {
                 byte[] buffer = new byte[1000];
-                int length = packetIO.ReceivePacket(buffer);
+                StringBuilder address = new StringBuilder();
+                int length = packetIO.ReceivePacket(buffer, address);
                 //Debug.Log("received packed of len=" + length);
                 if (length > 0)
                 {
@@ -70,7 +81,7 @@ public class NetworkInputManager : MonoBehaviour {
                     Debug.Log(receivedMessage);
                     //X = 0.01f;
 
-                    HandleMessage(receivedMessage);
+                    HandleMessage(receivedMessage, address.ToString());
                 }
                 else
                     Thread.Sleep(20);
@@ -82,23 +93,31 @@ public class NetworkInputManager : MonoBehaviour {
         }
     }
 
-    private void HandleMessage(string udpMessage)
+    private void HandleMessage(string udpMessage, string source)
     {
+        if(!ConnectedControllers.ContainsKey(source))
+        {
+            ConnectedControllers[source] = new Controller();
+            if(ncDelegate!= null)
+            {
+                ncDelegate(source);
+            }
+        }
         UDPMessage message = JsonUtility.FromJson<UDPMessage>(udpMessage);
         switch(message.type)
         {
             case "Move":
-                Movement.X = message.x;
-                Movement.Y = message.y;
-                Movement.Z = message.z;
+                ConnectedControllers[source].Movement.X = message.x;
+                ConnectedControllers[source].Movement.Y = message.y;
+                ConnectedControllers[source].Movement.Z = message.z;
                 break;
             case "Fire":
-                FireCommandRegistered = true;
+                ConnectedControllers[source].FireCommandRegistered = true;
                 break;
             case "Rotate":
-                Rotation.X = message.x;
-                Rotation.Y = message.y;
-                Rotation.Z = message.z;
+                ConnectedControllers[source].Rotation.X = message.x;
+                ConnectedControllers[source].Rotation.Y = message.y;
+                ConnectedControllers[source].Rotation.Z = message.z;
                 break;
             default:
                 break;
@@ -116,6 +135,16 @@ public class UDPMessage
 {
     public string type = "Yo";
     public float x, y, z = 0.5f ;
+}
+
+public class Controller
+{
+
+    //Controller accelerometer
+    public ControllerMovement Movement = new ControllerMovement();
+    public ControllerMovement Rotation = new ControllerMovement();
+
+    public bool FireCommandRegistered = false;
 }
 
 public class ControllerMovement

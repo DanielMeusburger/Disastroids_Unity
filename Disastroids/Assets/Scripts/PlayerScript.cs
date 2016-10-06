@@ -6,6 +6,8 @@ public class PlayerScript : MonoBehaviour {
     //The speed of the ship
     public Vector2 speed = new Vector2(50, 50);
 
+    public string controllerIP { get; set; }
+
     //Store the movement, the rotation and the component
     private Vector2 movement;
     private float rotation;
@@ -19,25 +21,28 @@ public class PlayerScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        float inputX = NetworkInputManager.Movement.X;
-        float inputY = NetworkInputManager.Movement.Y;
+        
+        
+        float inputX = NetworkInputManager.ConnectedControllers[controllerIP].Movement.X;
+        float inputY = NetworkInputManager.ConnectedControllers[controllerIP].Movement.Y;
 
-        rotation = NetworkInputManager.Rotation.Z;
+        rotation = NetworkInputManager.ConnectedControllers[controllerIP].Rotation.Z;
 
         //Movement per direction
         movement = new Vector2(
           speed.x * inputX,
           speed.y * inputY);
 
-        if(NetworkInputManager.FireCommandRegistered)
+        if(NetworkInputManager.ConnectedControllers[controllerIP].FireCommandRegistered)
         {
             WeaponScript weapon = GetComponent<WeaponScript>();
             if(weapon != null)
             {
                 weapon.Attack(false);
             }
-            NetworkInputManager.FireCommandRegistered = false;
+            NetworkInputManager.ConnectedControllers[controllerIP].FireCommandRegistered = false;
         }
+        
     }
 
     void FixedUpdate()
