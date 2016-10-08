@@ -7,11 +7,7 @@ public class HealthScript : MonoBehaviour {
   /// Total hitpoints
   /// </summary>
   public int hp = 1;
-
-  /// <summary>
-  /// Enemy or player?
-  /// </summary>
-  public bool isEnemy = true;
+    
 
   /// <summary>
   /// Inflicts damage and check if the object should be destroyed
@@ -32,10 +28,12 @@ public class HealthScript : MonoBehaviour {
   {
     // Is this a shot?
     ShotScript shot = otherCollider.gameObject.GetComponent<ShotScript>();
+    PlayerScript myself = this.gameObject.GetComponent<PlayerScript>();
+
     if (shot != null)
     {
       // Avoid friendly fire
-      if (shot.isEnemyShot != isEnemy)
+      if (shot.origin != myself.controllerIP)
       {
         Damage(shot.damage);
 

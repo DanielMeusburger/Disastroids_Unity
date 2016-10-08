@@ -7,6 +7,7 @@ public class PlayerScript : MonoBehaviour {
     public Vector2 speed = new Vector2(50, 50);
 
     public string controllerIP { get; set; }
+    public bool IsPlayer2 = false;
 
     //Store the movement, the rotation and the component
     private Vector2 movement;
@@ -55,6 +56,11 @@ public class PlayerScript : MonoBehaviour {
 
         //Move the game object
         rigidbodyComponent.velocity = movement;
+        if (IsPlayer2)
+        {
+            rotation = (rotation + 180) % 360;
+        }
+
         rigidbodyComponent.rotation = rotation;
     }
 }

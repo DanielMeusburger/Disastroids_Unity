@@ -24,6 +24,7 @@ GameObject:
   - 50: {fileID: 50000010117726918}
   - 114: {fileID: 114000010943686048}
   - 114: {fileID: 114000010836817512}
+  - 114: {fileID: 114000011936660706}
   m_Layer: 0
   m_Name: Player 1
   m_TagString: Untagged
@@ -74,7 +75,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Size: {x: 10, y: 10}
+  m_Size: {x: 1, y: 1}
 --- !u!114 &114000010836817512
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -100,6 +101,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: {x: 50, y: 50}
+  IsPlayer2: 0
+--- !u!114 &114000011936660706
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000011412186890}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a2018fca282d474081a7748be516126, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hp: 1
 --- !u!212 &212000014240444942
 SpriteRenderer:
   m_ObjectHideFlags: 1

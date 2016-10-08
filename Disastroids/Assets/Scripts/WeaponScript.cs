@@ -56,11 +56,11 @@ public class WeaponScript : MonoBehaviour {
             shotTransform.position = transform.position;
             shotTransform.rotation = transform.rotation;
 
-            // The is enemy property
+            //Here we define who is the owner of the shot
             ShotScript shot = shotTransform.gameObject.GetComponent<ShotScript>();
             if (shot != null)
             {
-                shot.isEnemyShot = isEnemy;
+                shot.origin = gameObject.GetComponent<PlayerScript>().controllerIP;
             }
 
             // Make the weapon shot always towards it

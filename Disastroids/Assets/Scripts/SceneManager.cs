@@ -4,35 +4,52 @@ using System.Collections;
 public class SceneManager : MonoBehaviour {
 
     public Transform playerPrefab;
+    public int MaxNumberPlayer = 2;
 
-    private bool shouldInstantiate = false;
-    private string nextControllerIP;
+    private int NumberOfPlayers ;
+    private ArrayList controllersToInstanciate = new ArrayList();
 
-	// Use this for initialization
+    
 	void Start () {
-
+        NumberOfPlayers = 0;
         NetworkInputManager.setNewControllerDelegate(addNewPlayer);
-	
 	}
 	
-	// Update is called once per frame
 	void Update () {
-        if (shouldInstantiate)
+        foreach(string controllerIP in controllersToInstanciate)
         {
-            Transform player = Instantiate(playerPrefab) as Transform;
+            if (NumberOfPlayers < MaxNumberPlayer)
+            {
+                Transform player = Instantiate(playerPrefab) as Transform;
 
-            PlayerScript playerScript = player.gameObject.GetComponent<PlayerScript>();
-            playerScript.controllerIP = nextControllerIP;
+                PlayerScript playerScript = player.gameObject.GetComponent<PlayerScript>();
+                playerScript.controllerIP = controllerIP;
 
-            player.position = new Vector2(0, 0);
-            shouldInstantiate = false;
+                //If it is player 1, we make it appear on the bottom of the screen, facing upwards
+                if(NumberOfPlayers==0)
+                {
+                    player.position = new Vector2(0, -8);
+                } else
+                {
+                    player.position = new Vector2(0, 8);
+                    playerScript.IsPlayer2 = true;
+                }
+                
+
+                NumberOfPlayers++;
+            } else
+            {
+                Debug.Log("Maximum number of players reached.");
+            }
         }
+
+        controllersToInstanciate.Clear();
         
     }
 
+    //Instanciation of new GameObjects must be done in main thread
     public void addNewPlayer(string controllerIP)
     {
-        nextControllerIP = controllerIP;
-        shouldInstantiate = true;
+        controllersToInstanciate.Add(controllerIP);
     }
 }
