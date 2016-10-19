@@ -103,10 +103,16 @@ public class NetworkInputManager : MonoBehaviour {
         }
         UDPMessage message = JsonUtility.FromJson<UDPMessage>(udpMessage);
 
-        if(ConnectedControllers[source].actions[message.type] != null)
+        Debug.Log(message.type);
+        try
         {
             ConnectedControllers[source].actions[message.type](message.x, message.y, message.z);
+        } catch(Exception e)
+        {
+            Debug.Log(e);
         }
+
+
     }
 	
 	// Update is called once per frame

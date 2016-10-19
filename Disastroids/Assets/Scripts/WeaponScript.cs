@@ -34,9 +34,8 @@ public class WeaponScript : MonoBehaviour {
             if (superShotChargeStatus < superShotNeededCharge)
             {
                 // Make the weapon shot always towards it
-                Vector2 shotDirection = this.transform.up; //Here we define the shoot direction à la space invaders
+                Vector2 shotDirection = this.transform.up; //Here we define the shoot direction
                 singleShot(shotDirection);
-                ChargeSuperShot();
             } else
             {
                 //SUPERSHOOOOOOOT  \   |   /

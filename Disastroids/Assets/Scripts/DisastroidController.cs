@@ -40,7 +40,7 @@ namespace Assets.Scripts
         public DisastroidController()
         {
             actions["Fire"] = CommandFire;
-            actions["Charge"] = CommandCharge;
+            actions["Swipe"] = CommandCharge;
         }
 
         public void CommandFire(float x, float y, float z)
