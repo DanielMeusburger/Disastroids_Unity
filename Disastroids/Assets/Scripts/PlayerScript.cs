@@ -16,6 +16,8 @@ public class PlayerScript : MonoBehaviour {
     private Rigidbody2D rigidbodyComponent;
 
     private DisastroidController controller;
+    private ControllerMovement initialState;
+    private bool initialStateSet = false;
 
 
     // Use this for initialization
@@ -25,12 +27,22 @@ public class PlayerScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        
-        
-        float inputX = (controller.Rotation.Y%90)/-1000;
-        float inputY = (controller.Rotation.X%90)/-1000;
 
-        rotation = NetworkInputManager.ConnectedControllers[controllerIP].Rotation.Y;
+        if (!initialStateSet)
+        {
+            initialState = new ControllerMovement();
+            initialState.X = controller.Rotation.X;
+            initialState.Y = controller.Rotation.Y;
+            initialState.Z = controller.Rotation.Z;
+            initialStateSet = true;
+        }
+        
+        float inputX = ((controller.Rotation.Y - initialState.Y)%90)/-1000;
+        float inputY = ((controller.Rotation.X - initialState.X)%90)/-1000;
+
+        Debug.Log(inputX + ":" + inputY);
+
+        rotation = controller.Rotation.Y;
 
         //Movement per direction
         movement = new Vector2(
