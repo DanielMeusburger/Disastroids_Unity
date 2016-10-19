@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using Assets.Scripts;
 
 public class SceneManager : MonoBehaviour {
 
@@ -51,5 +52,6 @@ public class SceneManager : MonoBehaviour {
     public void addNewPlayer(string controllerIP)
     {
         controllersToInstanciate.Add(controllerIP);
+        NetworkInputManager.ConnectedControllers[controllerIP] = new DisastroidController();
     }
 }

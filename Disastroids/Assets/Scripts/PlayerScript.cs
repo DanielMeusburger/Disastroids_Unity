@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using Assets.Scripts;
 
 public class PlayerScript : MonoBehaviour {
     
@@ -14,18 +15,20 @@ public class PlayerScript : MonoBehaviour {
     private float rotation;
     private Rigidbody2D rigidbodyComponent;
 
+    private DisastroidController controller;
+
 
     // Use this for initialization
     void Start () {
-	
-	}
+        controller = (DisastroidController)NetworkInputManager.ConnectedControllers[controllerIP];
+    }
 	
 	// Update is called once per frame
 	void Update () {
         
         
-        float inputX = (NetworkInputManager.ConnectedControllers[controllerIP].Rotation.Y%90)/-1000;
-        float inputY = (NetworkInputManager.ConnectedControllers[controllerIP].Rotation.X%90)/-1000;
+        float inputX = (controller.Rotation.Y%90)/-1000;
+        float inputY = (controller.Rotation.X%90)/-1000;
 
         rotation = NetworkInputManager.ConnectedControllers[controllerIP].Rotation.Y;
 
@@ -35,18 +38,17 @@ public class PlayerScript : MonoBehaviour {
           speed.y * inputY);
 
         //Manage Fire Command
-        if(NetworkInputManager.ConnectedControllers[controllerIP].FireCommandRegistered)
+        if(controller.FireCommandRegistered)
         {
             WeaponScript weapon = GetComponent<WeaponScript>();
             if(weapon != null)
             {
                 weapon.Attack(false);
             }
-            NetworkInputManager.ConnectedControllers[controllerIP].FireCommandRegistered = false;
         }
 
         //Manage Charge Command
-        if (NetworkInputManager.ConnectedControllers[controllerIP].ChargeCommandRegistered)
+        if (controller.ChargeCommandRegistered)
         {
             WeaponScript weapon = GetComponent<WeaponScript>();
             if(weapon != null)

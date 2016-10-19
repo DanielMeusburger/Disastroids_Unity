@@ -1,10 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using System.Threading;
 using System;
 using System.Text;
 
 public delegate void NewControllerDelegate(string controllerIP);
+
+public delegate void CommandReceivedDelegate(float x, float y, float z);
 
 public class NetworkInputManager : MonoBehaviour {
 
@@ -18,7 +21,7 @@ public class NetworkInputManager : MonoBehaviour {
     public int ListeningPort;
     public int SendingPort;
 
-    public static System.Collections.Generic.Dictionary<string, Controller> ConnectedControllers {
+    public static Dictionary<string, Controller> ConnectedControllers {
         get;
         protected set;
     }
@@ -30,7 +33,7 @@ public class NetworkInputManager : MonoBehaviour {
 
     void Start () {
 
-        ConnectedControllers = new System.Collections.Generic.Dictionary<string,Controller>();
+        ConnectedControllers = new Dictionary<string,Controller>();
 
         packetIO = GetComponent<UDPPacketIO>();
         packetIO.init("127.0.0.1", ListeningPort, SendingPort);
@@ -93,33 +96,16 @@ public class NetworkInputManager : MonoBehaviour {
     {
         if(!ConnectedControllers.ContainsKey(source))
         {
-            ConnectedControllers[source] = new Controller();
             if(ncDelegate!= null)
             {
                 ncDelegate(source);
             }
         }
         UDPMessage message = JsonUtility.FromJson<UDPMessage>(udpMessage);
-        switch(message.type)
+
+        if(ConnectedControllers[source].actions[message.type] != null)
         {
-            case "Move":
-                ConnectedControllers[source].Movement.X = message.x;
-                ConnectedControllers[source].Movement.Y = message.y;
-                ConnectedControllers[source].Movement.Z = message.z;
-                break;
-            case "Fire":
-                ConnectedControllers[source].FireCommandRegistered = true;
-                break;
-            case "Orientation":
-                ConnectedControllers[source].Rotation.X = message.x;
-                ConnectedControllers[source].Rotation.Y = message.y;
-                ConnectedControllers[source].Rotation.Z = message.z;
-                break;
-            case "Charge":
-                ConnectedControllers[source].ChargeCommandRegistered = true;
-                break;
-            default:
-                break;
+            ConnectedControllers[source].actions[message.type](message.x, message.y, message.z);
         }
     }
 	
@@ -143,21 +129,27 @@ public class Controller
     public ControllerMovement Movement = new ControllerMovement();
     public ControllerMovement Rotation = new ControllerMovement();
 
-    public bool FireCommandRegistered = false;
+    public Dictionary<string, CommandReceivedDelegate> actions = new Dictionary<string, CommandReceivedDelegate>();
 
-    private bool _chargeCommnandRegistered = false;
-    public bool ChargeCommandRegistered {
-        get
-        {
-            bool returnvalue = _chargeCommnandRegistered;
-            _chargeCommnandRegistered = false;
-            return returnvalue;
-            //return _chargeCommandRegistered;
-        }
-        set
-        {
-            _chargeCommnandRegistered = value;
-        }
+
+    public Controller()
+    {
+        actions["Orientation"] = CommandOrientation;
+        actions["Move"] = CommandMove;
+    }
+
+    public void CommandOrientation(float x, float y, float z)
+    {
+        Rotation.X = x;
+        Rotation.Y = y;
+        Rotation.Z = z;
+    }
+
+    public void CommandMove(float x, float y, float z)
+    {
+        Movement.X = x;
+        Movement.Y = y;
+        Movement.Z = z;
     }
 }
 
