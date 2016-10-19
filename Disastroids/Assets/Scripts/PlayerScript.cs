@@ -29,16 +29,15 @@ public class PlayerScript : MonoBehaviour {
 	void Update () {
 
         //BOF
-        /*
         if (!initialStateSet)
         {
             initialState = new ControllerMovement();
-            initialState.X = controller.Rotation.X;
-            initialState.Y = controller.Rotation.Y;
-            initialState.Z = controller.Rotation.Z;
+            initialState.X = 0;// controller.Rotation.X;
+            initialState.Y = 0;//controller.Rotation.Y;
+            initialState.Z = 0;//controller.Rotation.Z;
             initialStateSet = true;
         }
-        */
+        
         
         float inputX = ((controller.Rotation.Y - initialState.Y)%90)/-1000;
         float inputY = ((controller.Rotation.X - initialState.X)%90)/-1000;

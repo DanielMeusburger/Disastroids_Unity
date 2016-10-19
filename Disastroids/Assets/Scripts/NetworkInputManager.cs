@@ -102,8 +102,7 @@ public class NetworkInputManager : MonoBehaviour {
             }
         }
         UDPMessage message = JsonUtility.FromJson<UDPMessage>(udpMessage);
-
-        Debug.Log(message.type);
+        
         try
         {
             ConnectedControllers[source].actions[message.type](message.x, message.y, message.z);
