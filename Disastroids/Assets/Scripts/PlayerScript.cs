@@ -24,16 +24,17 @@ public class PlayerScript : MonoBehaviour {
 	void Update () {
         
         
-        float inputX = NetworkInputManager.ConnectedControllers[controllerIP].Movement.X;
-        float inputY = NetworkInputManager.ConnectedControllers[controllerIP].Movement.Y;
+        float inputX = (NetworkInputManager.ConnectedControllers[controllerIP].Rotation.Y%90)/-1000;
+        float inputY = (NetworkInputManager.ConnectedControllers[controllerIP].Rotation.X%90)/-1000;
 
-        rotation = NetworkInputManager.ConnectedControllers[controllerIP].Rotation.Z;
+        rotation = NetworkInputManager.ConnectedControllers[controllerIP].Rotation.Y;
 
         //Movement per direction
         movement = new Vector2(
           speed.x * inputX,
           speed.y * inputY);
 
+        //Manage Fire Command
         if(NetworkInputManager.ConnectedControllers[controllerIP].FireCommandRegistered)
         {
             WeaponScript weapon = GetComponent<WeaponScript>();
@@ -42,6 +43,16 @@ public class PlayerScript : MonoBehaviour {
                 weapon.Attack(false);
             }
             NetworkInputManager.ConnectedControllers[controllerIP].FireCommandRegistered = false;
+        }
+
+        //Manage Charge Command
+        if (NetworkInputManager.ConnectedControllers[controllerIP].ChargeCommandRegistered)
+        {
+            WeaponScript weapon = GetComponent<WeaponScript>();
+            if(weapon != null)
+            {
+                weapon.ChargeSuperShot();
+            }
         }
         
     }
@@ -56,10 +67,7 @@ public class PlayerScript : MonoBehaviour {
 
         //Move the game object
         rigidbodyComponent.velocity = movement;
-        if (IsPlayer2)
-        {
-            rotation = (rotation + 180) % 360;
-        }
+        
 
         rigidbodyComponent.rotation = rotation;
     }

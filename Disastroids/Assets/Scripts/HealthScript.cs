@@ -2,17 +2,12 @@
 using System.Collections;
 
 public class HealthScript : MonoBehaviour {
-
-    /// <summary>
-  /// Total hitpoints
-  /// </summary>
+    
+  //Healthopints
   public int hp = 1;
     
-
-  /// <summary>
-  /// Inflicts damage and check if the object should be destroyed
-  /// </summary>
-  /// <param name="damageCount"></param>
+    
+  //Inflicts damage and check if the object should be destroyed
   public void Damage(int damageCount)
   {
     hp -= damageCount;

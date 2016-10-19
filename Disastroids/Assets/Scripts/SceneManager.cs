@@ -28,10 +28,10 @@ public class SceneManager : MonoBehaviour {
                 //If it is player 1, we make it appear on the bottom of the screen, facing upwards
                 if(NumberOfPlayers==0)
                 {
-                    player.position = new Vector2(0, -8);
+                    player.position = new Vector2(-9, -2);
                 } else
                 {
-                    player.position = new Vector2(0, 8);
+                    player.position = new Vector2(9, 2);
                     playerScript.IsPlayer2 = true;
                 }
                 

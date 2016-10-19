@@ -76,11 +76,7 @@ public class NetworkInputManager : MonoBehaviour {
                 if (length > 0)
                 {
                     string receivedMessage = System.Text.Encoding.ASCII.GetString(buffer);
-                    //DEBUG : If a UDP datagram is received, let's move the ship to the right indefinetly
-                    Debug.Log("New Message");
-                    Debug.Log(receivedMessage);
-                    //X = 0.01f;
-
+                    //Debug.Log(receivedMessage);
                     HandleMessage(receivedMessage, address.ToString());
                 }
                 else
@@ -114,10 +110,13 @@ public class NetworkInputManager : MonoBehaviour {
             case "Fire":
                 ConnectedControllers[source].FireCommandRegistered = true;
                 break;
-            case "Rotate":
+            case "Orientation":
                 ConnectedControllers[source].Rotation.X = message.x;
                 ConnectedControllers[source].Rotation.Y = message.y;
                 ConnectedControllers[source].Rotation.Z = message.z;
+                break;
+            case "Charge":
+                ConnectedControllers[source].ChargeCommandRegistered = true;
                 break;
             default:
                 break;
@@ -145,6 +144,21 @@ public class Controller
     public ControllerMovement Rotation = new ControllerMovement();
 
     public bool FireCommandRegistered = false;
+
+    private bool _chargeCommnandRegistered = false;
+    public bool ChargeCommandRegistered {
+        get
+        {
+            bool returnvalue = _chargeCommnandRegistered;
+            _chargeCommnandRegistered = false;
+            return returnvalue;
+            //return _chargeCommandRegistered;
+        }
+        set
+        {
+            _chargeCommnandRegistered = value;
+        }
+    }
 }
 
 public class ControllerMovement
