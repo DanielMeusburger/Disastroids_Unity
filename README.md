@@ -7,7 +7,7 @@ Disastroid-Unity is the Untity side of the library and is meant to handle the cu
 
 ##Usage
 ###Importing our InputManager
-Just add the file `NetworkInputManager.cs` to your Scene in Unity.
+Just add the file `NetworkInputManager.cs` to your Scene in Unity and the file `UDPPacketIO.cs` to your script folder.
 ###Define your own controller
 Disastroid controller is meant to be extended by your own controller implementation just by extending the class `Controller`
 
