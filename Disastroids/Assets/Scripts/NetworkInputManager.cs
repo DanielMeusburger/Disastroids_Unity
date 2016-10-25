@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using System;
@@ -32,12 +31,12 @@ public class NetworkInputManager : MonoBehaviour {
     }
 
     void Start () {
-
         ConnectedControllers = new Dictionary<string,Controller>();
 
         packetIO = GetComponent<UDPPacketIO>();
-        packetIO.init("127.0.0.1", ListeningPort, SendingPort);
+        packetIO.init(SendingPort);
 
+        //Start listening to UDP packets
         ReadThread = new Thread(Read);
         ReaderRunning = true;
         ReadThread.IsBackground = true;
@@ -66,6 +65,7 @@ public class NetworkInputManager : MonoBehaviour {
         }
     }
 
+    //Thread method waiting for UDP packets
     private void Read()
     {
         try
@@ -92,15 +92,18 @@ public class NetworkInputManager : MonoBehaviour {
         }
     }
 
+    //Method called when a command is received from a controller
     private void HandleMessage(string udpMessage, string source)
     {
-        if(!ConnectedControllers.ContainsKey(source))
+        //Here we check if controller sending the command is known or not. If not, we call the NewControllerDelegate
+        if (!ConnectedControllers.ContainsKey(source))
         {
             if(ncDelegate!= null)
             {
                 ncDelegate(source);
             }
         }
+        //Parse the message from JSON
         UDPMessage message = JsonUtility.FromJson<UDPMessage>(udpMessage);
         
         try
@@ -120,6 +123,7 @@ public class NetworkInputManager : MonoBehaviour {
 	}
 }
 
+//This class represents an UDP command
 [Serializable]
 public class UDPMessage
 {
@@ -127,6 +131,8 @@ public class UDPMessage
     public float x, y, z = 0.5f ;
 }
 
+
+//This basic implementation of a controller is meant to be extended to handle more functionalities
 public class Controller
 {
 

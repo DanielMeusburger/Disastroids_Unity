@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using System.Collections;
-using Assets.Scripts;
 
 public class SceneManager : MonoBehaviour {
 
@@ -17,6 +16,7 @@ public class SceneManager : MonoBehaviour {
 	}
 	
 	void Update () {
+        //We check if there are any controllers that just joined the game, and add player gameObjects accordingly to the scene
         foreach(string controllerIP in controllersToInstanciate)
         {
             if (NumberOfPlayers < MaxNumberPlayer)
@@ -26,7 +26,7 @@ public class SceneManager : MonoBehaviour {
                 PlayerScript playerScript = player.gameObject.GetComponent<PlayerScript>();
                 playerScript.controllerIP = controllerIP;
 
-                //If it is player 1, we make it appear on the bottom of the screen, facing upwards
+                //We make the 2 players appear on different place
                 if(NumberOfPlayers==0)
                 {
                     player.position = new Vector2(-9, -2);
@@ -35,8 +35,6 @@ public class SceneManager : MonoBehaviour {
                     player.position = new Vector2(9, 2);
                     playerScript.IsPlayer2 = true;
                 }
-                
-
                 NumberOfPlayers++;
             } else
             {

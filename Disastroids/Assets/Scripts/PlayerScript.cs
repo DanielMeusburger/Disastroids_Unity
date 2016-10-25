@@ -1,6 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
-using Assets.Scripts;
 
 public class PlayerScript : MonoBehaviour {
     
@@ -70,6 +68,7 @@ public class PlayerScript : MonoBehaviour {
             }
         }
 
+        //Here we make sure the player doesn't get out of the camera FOV
         var dist = (transform.position - Camera.main.transform.position).z;
 
         var leftBorder = Camera.main.ViewportToWorldPoint(

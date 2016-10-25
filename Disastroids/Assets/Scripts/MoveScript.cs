@@ -1,18 +1,11 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 public class MoveScript : MonoBehaviour {
-
-    // 1 - Designer variables
-
-    /// <summary>
-    /// Object speed
-    /// </summary>
+    
+    //Object speed
     public Vector2 speed = new Vector2(10, 10);
-
-    /// <summary>
-    /// Moving direction
-    /// </summary>
+    
+    //Moving direction
     public Vector2 direction = new Vector2(1, 0);
 
     private Vector2 movement;
@@ -20,7 +13,6 @@ public class MoveScript : MonoBehaviour {
 
     void Update()
     {
-        // 2 - Movement
         movement = new Vector2(
           speed.x * direction.x,
           speed.y * direction.y);
@@ -28,7 +20,10 @@ public class MoveScript : MonoBehaviour {
 
     void FixedUpdate()
     {
-        if (rigidbodyComponent == null) rigidbodyComponent = GetComponent<Rigidbody2D>();
+        if (rigidbodyComponent == null)
+        {
+            rigidbodyComponent = GetComponent<Rigidbody2D>();
+        }
 
         // Apply movement to the rigidbody
         rigidbodyComponent.velocity = movement;
