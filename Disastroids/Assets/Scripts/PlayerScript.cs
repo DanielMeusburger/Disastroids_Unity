@@ -39,7 +39,7 @@ public class PlayerScript : MonoBehaviour {
         }
         
         
-        float inputX = ((controller.Rotation.Y - initialState.Y)%90)/-1000;
+        float inputX = ((controller.Rotation.Y - initialState.Y)%180)/-1000;
         float inputY = ((controller.Rotation.X - initialState.X)%90)/-1000;
         
 
@@ -69,7 +69,31 @@ public class PlayerScript : MonoBehaviour {
                 weapon.ChargeSuperShot();
             }
         }
-        
+
+        var dist = (transform.position - Camera.main.transform.position).z;
+
+        var leftBorder = Camera.main.ViewportToWorldPoint(
+          new Vector3(0, 0, dist)
+        ).x;
+
+        var rightBorder = Camera.main.ViewportToWorldPoint(
+          new Vector3(1, 0, dist)
+        ).x;
+
+        var topBorder = Camera.main.ViewportToWorldPoint(
+          new Vector3(0, 0, dist)
+        ).y;
+
+        var bottomBorder = Camera.main.ViewportToWorldPoint(
+          new Vector3(0, 1, dist)
+        ).y;
+
+        transform.position = new Vector3(
+          Mathf.Clamp(transform.position.x, leftBorder, rightBorder),
+          Mathf.Clamp(transform.position.y, topBorder, bottomBorder),
+          transform.position.z
+        );
+
     }
 
     void FixedUpdate()
